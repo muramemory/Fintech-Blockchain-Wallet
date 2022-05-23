@@ -30,6 +30,7 @@ from dataclasses import dataclass
 from typing import Any, List
 from web3 import Web3
 w3 = Web3(Web3.HTTPProvider('HTTP://127.0.0.1:7545'))
+
 ################################################################################
 # Step 1:
 # Import Ethereum Transaction Functions into the Fintech Finder Application
@@ -58,16 +59,10 @@ w3 = Web3(Web3.HTTPProvider('HTTP://127.0.0.1:7545'))
 # * `get_balance`
 # * `send_transaction`
 
-from crypto_wallet import generate_account
-from crypto_wallet import get_balance
-from crypto_wallet import send_transaction
-
-
 # 4. Within the Streamlit sidebar section of code, create a variable named
 # `account`. Set this variable equal to a call on the `generate_account`
 # function. This function will create the Fintech Finder customer’s (in this
 # case, your) HD wallet and Ethereum account.
-
 
 # 5. Within this same section of the `fintech_finder.py` file, define a
 # new `st.sidebar.write` function that will display the balance of the
@@ -82,10 +77,14 @@ from crypto_wallet import send_transaction
 # * `get_balance`
 # * `send_transaction`
 
+
+
 # @TODO:
 # From `crypto_wallet.py import the functions generate_account, get_balance,
 #  and send_transaction
-# YOUR CODE HERE
+from crypto_wallet import generate_account 
+from crypto_wallet import get_balance
+from crypto_wallet import send_transaction
 
 ################################################################################
 # Fintech Finder Candidate Information
@@ -93,10 +92,10 @@ from crypto_wallet import send_transaction
 # Database of Fintech Finder candidates including their name, digital address, rating and hourly cost per Ether.
 # A single Ether is currently valued at $1,500
 candidate_database = {
-    "Lane": ["Lane", "0xaC8eB8B2ed5C4a0fC41a84Ee4950F417f67029F0", "4.3", .20, "Images/lane.jpeg"],
-    "Ash": ["Ash", "0x2422858F9C4480c2724A309D58Ffd7Ac8bF65396", "5.0", .33, "Images/ash.jpeg"],
-    "Jo": ["Jo", "0x8fD00f170FDf3772C5ebdCD90bF257316c69BA45", "4.7", .19, "Images/jo.jpeg"],
-    "Kendall": ["Kendall", "0x8fD00f170FDf3772C5ebdCD90bF257316c69BA45", "4.1", .16, "Images/kendall.jpeg"]
+    "Lane": ["Lane", "0x7d62e2a130A3a9224fD93e96190fF0175a103F2d", "4.3", .20, "../Images/lane.jpeg"],
+    "Ash": ["Ash", "0xAe4028C39e88A3103695ED517f0fca10fDc81543", "5.0", .33, "../Images/ash.jpeg"],
+    "Jo": ["Jo", "0xC283dba67361B21D83Daf55A6fC890fbe737AC6e", "4.7", .19, "../Images/jo.jpeg"],
+    "Kendall": ["Kendall", "0x044b1AB80702Ee14846f301A2524Ad27Fa7231E4", "4.1", .16, "../Images/kendall.jpeg"]
 }
 
 # A list of the FinTech Finder candidates first names
@@ -127,9 +126,7 @@ st.text(" \n")
 # Streamlit Sidebar Code - Start
 
 st.sidebar.markdown("## Client Account Address and Ethernet Balance in Ether")
-account = generate_account
 
-st.sidebar.write(get_balance)
 ##########################################
 # Step 1 - Part 4:
 # Create a variable named `account`. Set this variable equal to a call on the
@@ -138,7 +135,7 @@ st.sidebar.write(get_balance)
 
 # @TODO:
 #  Call the `generate_account` function and save it as the variable `account`
-# YOUR CODE HERE
+account = generate_account()
 
 ##########################################
 
@@ -154,7 +151,7 @@ st.sidebar.write(account.address)
 # @TODO
 # Call `get_balance` function and pass it your account address
 # Write the returned ether balance to the sidebar
-# YOUR CODE HERE
+st.write(get_balance(w3, account.address))
 
 ##########################################
 
@@ -208,6 +205,7 @@ st.sidebar.markdown("## Total Wage in Ether")
     # * Write the `wage` variable to the Streamlit sidebar by
     # using `st.sidebar.write`.
 
+
 # 2. Now that the application can calculate a candidate’s wage, write the code
 # that will allow a customer (you, in this case) to send an Ethereum blockchain
 # transaction that pays the hired candidate. To accomplish this, locate the
@@ -232,24 +230,25 @@ st.sidebar.markdown("## Total Wage in Ether")
     # as a variable named `transaction_hash`, and have it display on the
     # application’s web interface.
 
-##########################################
-# Step 2 - Part 1:
-# * Write the equation that calculates the candidate’s wage. This equation
-# should assess the candidate’s hourly rate from the candidate database
-# (`candidate_database[person][3]`) and then multiply this hourly rate by
-# the value of the `hours` variable. Save this calculation’s output as a
-# variable named `wage`.
-# * Write the `wage` variable to the Streamlit sidebar by using `st.sidebar.write`.
+# ##########################################
+# # Step 2 - Part 1:
+# # * Write the equation that calculates the candidate’s wage. This equation
+# # should assess the candidate’s hourly rate from the candidate database
+# # (`candidate_database[person][3]`) and then multiply this hourly rate by
+# # the value of the `hours` variable. Save this calculation’s output as a
+# # variable named `wage`.
+# # * Write the `wage` variable to the Streamlit sidebar by using `st.sidebar.write`.
 
-# @TODO
-# Calculate total `wage` for the candidate by multiplying the candidate’s hourly
-# rate from the candidate database (`candidate_database[person][3]`) by the
-# value of the `hours` variable
-# YOUR CODE HERE
+# # @TODO
+# # Calculate total `wage` for the candidate by multiplying the candidate’s hourly
+# # rate from the candidate database (`candidate_database[person][3]`) by the
+# # value of the `hours` variable
+wage = hours * hourly_rate
 
-# @TODO
-# Write the `wage` calculation to the Streamlit sidebar
-# YOUR CODE HERE
+
+# # @TODO
+# # Write the `wage` calculation to the Streamlit sidebar
+st.sidebar.write(wage)
 
 ##########################################
 # Step 2 - Part 2:
@@ -276,7 +275,7 @@ if st.sidebar.button("Send Transaction"):
     # Call the `send_transaction` function and pass it 3 parameters:
     # Your `account`, the `candidate_address`, and the `wage` as parameters
     # Save the returned transaction hash as a variable named `transaction_hash`
-    # YOUR CODE HERE
+    transaction_hash = send_transaction(w3,account, candidate_address, wage)
 
     # Markdown for the transaction hash
     st.sidebar.markdown("#### Validated Transaction Hash")
