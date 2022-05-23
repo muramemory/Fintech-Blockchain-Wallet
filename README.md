@@ -14,6 +14,9 @@ Libraries used:
  - web3 - Account
  - web3 - middleware
  - web3.gas_strategies.time_based - medium_gas_price_strategy
+ - streamlit
+ - dataclasses - dataclass
+ - typing - Any, List
 
  ## Conclusion
 
